@@ -1,0 +1,10 @@
+<App Theme="Basic">
+	<UserSettings ux:Global="UserSettings" />
+	<JavaScript>
+		var settings = require('UserSettings');
+		console.log("Starting");
+		// settings.setString("bolavSetting", "MyString");
+		console.log(settings.getString("bolavSetting"));
+	</JavaScript>
+</App>
+
