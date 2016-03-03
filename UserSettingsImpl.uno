@@ -6,6 +6,9 @@ using Android.android.content;
 
 extern (!iOS && !Android) public class UserSettingsImpl
 {
+	public UserSettingsImpl () {}
+	public string GetString (string key) { return "Not Supported"; }
+	public void SetString (string key, string val) {}
 }
 
 extern(iOS) public class UserSettingsImpl

@@ -17,7 +17,13 @@ public class UserSettings : NativeModule {
 			AddMember(new NativeFunction("getString", (NativeCallback)AndroidGetString));
 			AddMember(new NativeFunction("setString", (NativeCallback)AndroidSetString));
 		}
+		if defined(!Android && !iOS) {
+			AddMember(new NativeFunction("getString", LocalGetString));
+			AddMember(new NativeFunction("setString", LocalSetString));
+		}
 	}
+	
+	// iOS
 	extern(iOS) public object iOSGetString(Context c, object[] args) {
 		var key = args[0] as string;
 		return _us.GetString(key);
@@ -29,12 +35,24 @@ public class UserSettings : NativeModule {
 		return null;
 	}
 
+	// Android
 	extern(Android) public object AndroidGetString(Context c, object[] args) {
 		var key = args[0] as string;
 		return _us.GetString(key);
 	}
-
 	extern(Android) public object AndroidSetString(Context c, object[] args) {
+		var key = args[0] as string;
+		var val = args[1] as string;
+		_us.SetString(key, val);
+		return null;
+	}
+
+	// Local
+	extern public object LocalGetString(Context c, object[] args) {
+		var key = args[0] as string;
+		return _us.GetString(key);
+	}
+	extern public object LocalSetString(Context c, object[] args) {
 		var key = args[0] as string;
 		var val = args[1] as string;
 		_us.SetString(key, val);
