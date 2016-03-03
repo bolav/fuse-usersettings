@@ -43,4 +43,10 @@ extern(Android) public class UserSettingsImpl
 		return native.getString(key, "");
 	}
 
+	public void SetString (string key, string val) {
+		var editor = native.edit();
+		editor.putString(key, val);
+		editor.commit();
+	}
+
 }
