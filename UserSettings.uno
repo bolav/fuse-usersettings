@@ -26,7 +26,11 @@ public class UserSettings : NativeModule {
 	// iOS
 	extern(iOS) public object iOSGetString(Context c, object[] args) {
 		var key = args[0] as string;
-		return _us.GetString(key);
+		var val = _us.GetString(key);
+		if (val == null && args.Length > 1) {
+			val = args[1] as string;
+		}
+		return val;
 	}
 	extern(iOS) public object iOSSetString(Context c, object[] args) {
 		var key = args[0] as string;

@@ -12,15 +12,7 @@
 		}
 
 		function get_value () {
-			var val = settings.getString(settings_name.value);
-			console.log("value " + val);
-			if (val == undefined) {
-				console.log("undefined");
-				settings_value.value = '';
-			}
-			else {
-				settings_value.value = val;
-			}
+			settings_value.value = settings.getString(settings_name.value, '');
 		}
 
 		module.exports = {
