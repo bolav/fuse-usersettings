@@ -3,53 +3,74 @@ using Uno.Collections;
 using Fuse;
 using iOS.Foundation;
 using Android.android.content;
+using Uno.Compiler.ExportTargetInterop;
 
 extern (!iOS && !Android) public class UserSettingsImpl
 {
+	static Dictionary<string,string> settings = new Dictionary<string,string>();
+
 	public UserSettingsImpl () {}
-	public string GetString (string key) { return "Not Supported"; }
-	public void SetString (string key, string val) {}
+	public string GetString (string key) {
+		string val;
+		settings.TryGetValue(key, out val);
+		return val;
+	}
+	public void SetString (string key, string val) {
+		settings[key] = val;
+	}
 }
 
 extern(iOS) public class UserSettingsImpl
 {
-	NSUserDefaults native;
 	public UserSettingsImpl () {
-		native = NSUserDefaults._standardUserDefaults();
-		// native = new NSUserDefaults();
-		// native.init();
 	}
 
-	public string GetString (string key) {
-		return native.stringForKey(key);
-	}
+	[Foreign(Language.ObjC)]
+	public string GetString (string key)
+	@{
+		NSString *val = [[NSUserDefaults standardUserDefaults] stringForKey:key];
+		return val;
+	@}
 
-	public void SetString (string key, string val) {
-		var str = new NSString();
-		str.initWithString(val);
-		native.setObjectForKey(str, key);
-	}
+	[Foreign(Language.ObjC)]
+	public void SetString (string key, string val)
+	@{
+		[[NSUserDefaults standardUserDefaults] setObject:val forKey:key];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	@}
 
 }
 
 extern(Android) public class UserSettingsImpl
 {
-	SharedPreferences native;
+	Java.Object native;
+
 	public UserSettingsImpl () {
-		var ctx = Android.android.app.Activity.GetAppActivity();
-		native = ctx.getPreferences(Context.MODE_PRIVATE);
-		// native = new NSUserDefaults();
-		// native.init();
+		Init();
 	}
 
-	public string GetString (string key) {
-		return native.getString(key, "");
-	}
+    [Foreign(Language.Java)]
+    void Init()
+    @{
+        android.app.Activity ctx = com.fuse.Activity.getRootActivity();
+        @{UserSettingsImpl:Of(_this).native:Set(ctx.getPreferences(android.content.Context.MODE_PRIVATE))};
+    @}
 
-	public void SetString (string key, string val) {
-		var editor = native.edit();
+    [Foreign(Language.Java)]
+	public string GetString (string key)
+    @{
+        android.content.SharedPreferences p =
+            (android.content.SharedPreferences)@{UserSettingsImpl:Of(_this).native:Get()};
+		return p.getString(key, "");
+	@}
+
+    [Foreign(Language.Java)]
+	public void SetString (string key, string val)
+    @{
+        android.content.SharedPreferences p =
+            (android.content.SharedPreferences)@{UserSettingsImpl:Of(_this).native:Get()};
+        android.content.SharedPreferences.Editor editor = p.edit();
 		editor.putString(key, val);
 		editor.commit();
-	}
-
+	@}
 }

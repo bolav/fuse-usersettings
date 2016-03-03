@@ -22,11 +22,13 @@ public class UserSettings : NativeModule {
 			AddMember(new NativeFunction("setString", LocalSetString));
 		}
 	}
-	
-	// iOS
 	extern(iOS) public object iOSGetString(Context c, object[] args) {
 		var key = args[0] as string;
-		return _us.GetString(key);
+		var val = _us.GetString(key);
+		if (val == null && args.Length > 1) {
+			val = args[1] as string;
+		}
+		return val;
 	}
 	extern(iOS) public object iOSSetString(Context c, object[] args) {
 		var key = args[0] as string;
@@ -35,10 +37,13 @@ public class UserSettings : NativeModule {
 		return null;
 	}
 
-	// Android
 	extern(Android) public object AndroidGetString(Context c, object[] args) {
 		var key = args[0] as string;
-		return _us.GetString(key);
+		var val = _us.GetString(key);
+		if (val == null && args.Length > 1) {
+			val = args[1] as string;
+		}
+		return val;
 	}
 	extern(Android) public object AndroidSetString(Context c, object[] args) {
 		var key = args[0] as string;
@@ -47,10 +52,13 @@ public class UserSettings : NativeModule {
 		return null;
 	}
 
-	// Local
 	extern public object LocalGetString(Context c, object[] args) {
 		var key = args[0] as string;
-		return _us.GetString(key);
+		var val = _us.GetString(key);
+		if (val == null && args.Length > 1) {
+			val = args[1] as string;
+		}
+		return val;
 	}
 	extern public object LocalSetString(Context c, object[] args) {
 		var key = args[0] as string;
