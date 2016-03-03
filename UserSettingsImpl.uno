@@ -3,6 +3,7 @@ using Uno.Collections;
 using Fuse;
 using iOS.Foundation;
 using Android.android.content;
+using Uno.Compiler.ExportTargetInterop;
 
 extern (!iOS && !Android) public class UserSettingsImpl
 {
@@ -34,22 +35,34 @@ extern(iOS) public class UserSettingsImpl
 
 extern(Android) public class UserSettingsImpl
 {
-	SharedPreferences native;
+	Java.Object native;
+
 	public UserSettingsImpl () {
-		var ctx = Android.android.app.Activity.GetAppActivity();
-		native = ctx.getPreferences(Context.MODE_PRIVATE);
-		// native = new NSUserDefaults();
-		// native.init();
+		Init();
 	}
 
-	public string GetString (string key) {
-		return native.getString(key, "");
-	}
+    [Foreign(Language.Java)]
+    void Init()
+    @{
+        android.app.Activity ctx = com.fuse.Activity.getRootActivity();
+        @{UserSettingsImpl:Of(_this).native:Set(ctx.getPreferences(android.content.Context.MODE_PRIVATE))};
+    @}
 
-	public void SetString (string key, string val) {
-		var editor = native.edit();
+    [Foreign(Language.Java)]
+	public string GetString (string key)
+    @{
+        android.content.SharedPreferences p =
+            (android.content.SharedPreferences)@{UserSettingsImpl:Of(_this).native:Get()};
+		return p.getString(key, "");
+	@}
+
+    [Foreign(Language.Java)]
+	public void SetString (string key, string val)
+    @{
+        android.content.SharedPreferences p =
+            (android.content.SharedPreferences)@{UserSettingsImpl:Of(_this).native:Get()};
+        android.content.SharedPreferences.Editor editor = p.edit();
 		editor.putString(key, val);
 		editor.commit();
-	}
-
+	@}
 }
