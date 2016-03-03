@@ -7,29 +7,37 @@ using Uno.Compiler.ExportTargetInterop;
 
 extern (!iOS && !Android) public class UserSettingsImpl
 {
+	static Dictionary<string,string> settings = new Dictionary<string,string>();
+
 	public UserSettingsImpl () {}
-	public string GetString (string key) { return "Not Supported"; }
-	public void SetString (string key, string val) {}
+	public string GetString (string key) {
+		string val;
+		settings.TryGetValue(key, out val);
+		return val;
+	}
+	public void SetString (string key, string val) {
+		settings[key] = val;
+	}
 }
 
 extern(iOS) public class UserSettingsImpl
 {
-	NSUserDefaults native;
 	public UserSettingsImpl () {
-		native = NSUserDefaults._standardUserDefaults();
-		// native = new NSUserDefaults();
-		// native.init();
 	}
 
-	public string GetString (string key) {
-		return native.stringForKey(key);
-	}
+	[Foreign(Language.ObjC)]
+	public string GetString (string key)
+	@{
+		NSString *val = [[NSUserDefaults standardUserDefaults] stringForKey:key];
+		return val;
+	@}
 
-	public void SetString (string key, string val) {
-		var str = new NSString();
-		str.initWithString(val);
-		native.setObjectForKey(str, key);
-	}
+	[Foreign(Language.ObjC)]
+	public void SetString (string key, string val)
+	@{
+		[[NSUserDefaults standardUserDefaults] setObject:val forKey:key];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	@}
 
 }
 

@@ -1,10 +1,46 @@
 <App Theme="Basic">
 	<UserSettings ux:Global="UserSettings" />
 	<JavaScript>
+		var Observable = require('FuseJS/Observable');
+		var settings_name = Observable('test_setting');
+		var settings_value = Observable('empty');
+
 		var settings = require('UserSettings');
-		console.log("Starting");
-		// settings.setString("bolavSetting", "MyString");
-		console.log(settings.getString("bolavSetting"));
+
+		function set_value () {
+			settings.setString(settings_name.value, settings_value.value);
+		}
+
+		function get_value () {
+			var val = settings.getString(settings_name.value);
+			console.log("value " + val);
+			if (val == undefined) {
+				console.log("undefined");
+				settings_value.value = '';
+			}
+			else {
+				settings_value.value = val;
+			}
+		}
+
+		module.exports = {
+			settings_name: settings_name,
+			settings_value: settings_value,
+			set_value: set_value,
+			get_value: get_value
+		}
 	</JavaScript>
+	<ClientPanel>
+		<StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<Text Value="Name" /><TextInput Value="{settings_name}" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<Text Value="Value" /><TextInput Value="{settings_value}" />
+			</StackPanel>
+			<Button Text="Set" Clicked="{set_value}" />
+			<Button Text="Get" Clicked="{get_value}" />
+		</StackPanel>
+	</ClientPanel>
 </App>
 
