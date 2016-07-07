@@ -1,4 +1,4 @@
-<App Theme="Basic">
+<App>
 	<UserSettings ux:Global="UserSettings" />
 	<JavaScript>
 		var Observable = require('FuseJS/Observable');

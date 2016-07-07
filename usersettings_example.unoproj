@@ -1,10 +1,11 @@
 {
+  "Name":"UsersettingsExample",
   "RootNamespace": "",
   "Packages": [
     "Fuse",
     "FuseJS"
   ],
   "Includes": [
-    "*.uno",
+    "*",
   ]
 }

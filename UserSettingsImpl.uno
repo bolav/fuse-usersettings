@@ -1,8 +1,6 @@
 using Uno;
 using Uno.Collections;
 using Fuse;
-using iOS.Foundation;
-using Android.android.content;
 using Uno.Compiler.ExportTargetInterop;
 
 extern (!iOS && !Android) public class UserSettingsImpl
