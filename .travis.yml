@@ -1,7 +1,6 @@
 env:
   global:
     - NDK_VERSION=r10e
-    - FUSE_VERSION=0.21.0.6650
     - UNOPROJ=usersettings_example
     - NAME=UsersettingsExample
 language: 
@@ -24,7 +23,7 @@ cache:
 
 before_install:
   - ./.travis/install-ndk.sh
-  - ./.travis/install-fuse.sh
+  - wget https://www.fusetools.com/downloads/latest/beta/osx -O fuse-installer.pkg && sudo installer -pkg fuse-installer.pkg -target /
   - ./.travis/install-fuseandroid.sh
 
 script:
